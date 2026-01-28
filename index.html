@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Redes Sociales</title>
+    <title>Daslone - Mis Redes Sociales</title>
+    <link rel="icon" type="image/png" href="LogoDaslone.png">
+    
     <style>
         * {
             margin: 0;
@@ -23,34 +25,45 @@
             position: relative;
         }
 
-        body::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(255, 0, 0, 0.1) 0%, transparent 50%);
-            animation: moveBackground 20s ease-in-out infinite;
+        #video-background {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            opacity: 0.6;
         }
 
-        @keyframes moveBackground {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-50px, -50px); }
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 0;
+        }
+
+        body::before {
+            display: none;
         }
 
         .container {
             max-width: 500px;
             width: 100%;
-            background: rgba(20, 20, 25, 0.95);
+            background: rgba(20, 20, 25, 0.5);
             border-radius: 30px;
             padding: 50px 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             animation: fadeIn 0.6s ease-out;
             position: relative;
-            z-index: 1;
+            z-index: 2;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         @keyframes fadeIn {
@@ -89,11 +102,46 @@
             color: #ffffff;
             font-size: 28px;
             margin-bottom: 10px;
+            min-height: 40px;
+        }
+
+        .typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            display: inline-block;
+            border-right: 3px solid #ffffff;
+            animation: 
+                typing 2s steps(7, end) 0.5s forwards,
+                blink-caret 0.75s step-end 0.5s 3;
+            width: 0;
+        }
+
+        @keyframes typing {
+            from { 
+                width: 0;
+            }
+            to { 
+                width: 8.5ch;
+                border-right-color: transparent;
+            }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #ffffff; }
         }
 
         .subtitle {
             color: #aaaaaa;
             font-size: 16px;
+            animation: fadeInDelay 1s ease-out 2.5s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInDelay {
+            to { opacity: 1; }
         }
 
         .social-links {
@@ -117,6 +165,40 @@
             border: 2px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
+            opacity: 0;
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Retrasos para cada enlace */
+        .social-link:nth-child(1) {
+            animation-delay: 2.8s;
+        }
+
+        .social-link:nth-child(2) {
+            animation-delay: 3s;
+        }
+
+        .social-link:nth-child(3) {
+            animation-delay: 3.2s;
+        }
+
+        .social-link:nth-child(4) {
+            animation-delay: 3.4s;
+        }
+
+        .social-link:nth-child(5) {
+            animation-delay: 3.6s;
         }
 
         .social-link::before {
@@ -202,15 +284,27 @@
         .social-link:hover .arrow {
             transform: translateX(5px);
         }
+
+        /* Responsive para el video */
+        @media (max-width: 768px) {
+            #video-background {
+                min-width: 200%;
+            }
+        }
     </style>
 </head>
 <body>
+    <video id="video-background" autoplay loop playsinline>
+        <source src="fondovideopag.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
     <div class="container">
         <div class="profile">
             <div class="profile-img">
                 <img src="LogoDaslone.png" alt="Logo Daslone">
             </div>
-            <h1>Daslone</h1>
+            <h1><span class="typewriter">Daslone</span></h1>
             <p class="subtitle">Sígueme en mis redes sociales</p>
         </div>
 
@@ -256,5 +350,26 @@
             </a>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var video = document.getElementById('video-background');
+            video.volume = 0.40;
+            video.muted = true;
+            var playPromise = video.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    video.muted = false;
+                }).catch(function(error) {
+                    console.log('Auto-play prevenido:', error);
+                    document.body.addEventListener('click', function() {
+                        video.muted = false;
+                        video.play();
+                    }, { once: true });
+                });
+            }
+        });
+    </script>
 </body>
 </html>
